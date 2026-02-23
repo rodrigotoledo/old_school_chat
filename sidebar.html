@@ -2,22 +2,34 @@
 <html>
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <style type="text/css">
-    body { margin: 0; padding: 12px; background-color: #21222c; color: #f8f8f2; font-family: Georgia, serif; font-size: 12px; }
-    p { margin: 0 0 8px 0; color: #6272a4; font-size: 11px; }
-    ul { margin: 0; padding-left: 18px; list-style-type: square; }
-    li { margin-bottom: 6px; }
-    .you { color: #50fa7b; }
-  </style>
+  <link rel="stylesheet" type="text/css" href="theme.css">
 </head>
-<body>
+<body class="sidebar-page">
   <p>Participantes</p>
-  <ul>
-    <li class="you">Voce</li>
-    <li>Ana</li>
-    <li>Bruno</li>
-    <li>Maria</li>
-    <li>Pedro</li>
-  </ul>
+  <ul id="participants"></ul>
+  <script type="text/javascript">
+    var API_BASE = 'http://localhost:3000/api';
+    var el = document.getElementById('participants');
+    fetch(API_BASE + '/participants')
+      .then(function(r) { return r.json(); })
+      .then(function(participants) {
+        el.innerHTML = '';
+        for (var i = 0; i < participants.length; i++) {
+          var p = participants[i];
+          var li = document.createElement('li');
+          li.setAttribute('data-id', String(p.id));
+          if (p.name === 'Você') li.className = 'you';
+          li.textContent = p.name;
+          li.style.cursor = 'pointer';
+          li.onclick = function() {
+            var id = this.getAttribute('data-id');
+            var val = (id === '1') ? '' : id;
+            parent.postMessage({ type: 'setRecipient', recipientId: val }, '*');
+          };
+          el.appendChild(li);
+        }
+      })
+      .catch(function() { el.innerHTML = '<li>Erro ao carregar</li>'; });
+  </script>
 </body>
 </html>

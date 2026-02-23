@@ -2,21 +2,60 @@
 <html>
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <style type="text/css">
-    html, body { height: 100%; margin: 0; padding: 0; background-color: #282a36; color: #f8f8f2; font-family: Georgia, serif; font-size: 14px; }
-    #messages { height: 100%; overflow: auto; padding: 12px; }
-    p.msg { margin: 0 0 10px 0; padding: 4px 0; border-bottom: 1px solid #44475a; }
-    p.msg span.user { color: #8be9fd; font-weight: bold; margin-right: 6px; }
-    p.msg span.time { color: #6272a4; font-size: 11px; margin-left: 6px; }
-    p.msg.you span.user { color: #50fa7b; }
-  </style>
+  <link rel="stylesheet" type="text/css" href="theme.css">
 </head>
-<body>
-  <div id="messages">
-    <p class="msg"><span class="user">Ana</span><span class="time">10:01</span><br>Oi, tudo bem?</p>
-    <p class="msg you"><span class="user">Voce</span><span class="time">10:02</span><br>Sim! E ai?</p>
-    <p class="msg"><span class="user">Bruno</span><span class="time">10:03</span><br>Chat old school com iframe, legal.</p>
-    <p class="msg"><span class="user">Maria</span><span class="time">10:05</span><br>Escreva ali em baixo e clica Enviar.</p>
-  </div>
+<body class="main-page">
+  <div id="messages"></div>
+  <script type="text/javascript">
+    var API_BASE = 'http://localhost:3000/api';
+
+    function formatTime(createdAt) {
+      var d = new Date(createdAt);
+      var h = d.getHours();
+      var m = d.getMinutes();
+      return (h < 10 ? '0' : '') + h + ':' + (m < 10 ? '0' : '') + m;
+    }
+
+    function escapeHtml(s) {
+      if (!s) return '';
+      return String(s)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    function refreshMessages() {
+      var el = document.getElementById('messages');
+      if (!el) return;
+      fetch(API_BASE + '/messages')
+        .then(function(r) { return r.json(); })
+        .then(function(messages) {
+          el.innerHTML = '';
+          for (var i = 0; i < messages.length; i++) {
+            var msg = messages[i];
+            var isYou = msg.participant && msg.participant.name === 'Você';
+            var para = msg.recipient && msg.recipient.name ? 'para ' + msg.recipient.name : 'global';
+            var name = msg.participant ? msg.participant.name : '';
+            var div = document.createElement('div');
+            div.className = 'msg' + (isYou ? ' you' : '');
+            div.innerHTML =
+              '<div class="msg-meta">' +
+                '<span class="msg-from">' + escapeHtml(name) + '</span>' +
+                '<span class="msg-para"> · ' + escapeHtml(para) + '</span>' +
+                '<span class="msg-time">' + formatTime(msg.created_at) + '</span>' +
+              '</div>' +
+              '<div class="msg-body">' + escapeHtml(msg.body) + '</div>';
+            el.appendChild(div);
+          }
+          el.scrollTop = el.scrollHeight;
+        })
+        .catch(function() { el.innerHTML = '<p class="msg">Erro ao carregar mensagens.</p>'; });
+    }
+
+    window.refreshMessages = refreshMessages;
+    refreshMessages();
+    setInterval(refreshMessages, 5000);
+  </script>
 </body>
 </html>

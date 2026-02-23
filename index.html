@@ -3,38 +3,7 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <title>Site Old School</title>
-  <style type="text/css">
-    body {
-      margin: 0;
-      padding: 0;
-      background-color: #282a36;
-    }
-    table.layout {
-      width: 100%;
-      border: 0;
-    }
-    table.layout td {
-      vertical-align: top;
-      border: 1px solid #44475a;
-    }
-    td.header-cell {
-      height: 80px;
-    }
-    td.sidebar-cell {
-      width: 180px;
-      background-color: #21222c;
-    }
-    td.main-cell {
-      background-color: #282a36;
-    }
-    td.footer-cell {
-      height: 52px;
-    }
-    iframe {
-      border: 0;
-      display: block;
-    }
-  </style>
+  <link rel="stylesheet" type="text/css" href="theme.css">
 </head>
 <body>
   <table class="layout" cellpadding="0" cellspacing="0">
@@ -57,5 +26,14 @@
       </td>
     </tr>
   </table>
+  <script type="text/javascript">
+    window.addEventListener('message', function(e) {
+      if (e.data && e.data.type === 'setRecipient') {
+        try {
+          window.frames['footer'].postMessage(e.data, '*');
+        } catch (err) {}
+      }
+    });
+  </script>
 </body>
 </html>

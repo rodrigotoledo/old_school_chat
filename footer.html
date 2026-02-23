@@ -2,43 +2,70 @@
 <html>
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <style type="text/css">
-    body { margin: 0; padding: 8px; background-color: #21222c; color: #f8f8f2; font-family: Georgia, serif; font-size: 14px; }
-    form { margin: 0; }
-    input[type="text"] { width: 80%; padding: 6px 8px; background-color: #282a36; color: #f8f8f2; border: 1px solid #44475a; }
-    input[type="submit"] { padding: 6px 14px; margin-left: 8px; background-color: #bd93f9; color: #282a36; border: 0; font-weight: bold; cursor: pointer; }
-  </style>
+  <link rel="stylesheet" type="text/css" href="theme.css">
 </head>
-<body>
-  <form name="chatform" onsubmit="return envia();">
-    <input type="text" name="msg" placeholder="Digite sua mensagem...">
+<body class="footer-page">
+  <form id="chatform">
+    <label>Para:</label>
+    <select name="recipient_id" id="recipient_id">
+      <option value="">Todos</option>
+    </select>
+    <input type="text" name="body" id="msgbody" placeholder="Digite sua mensagem...">
     <input type="submit" value="Enviar">
   </form>
   <script type="text/javascript">
-    function duasCasas(n) {
-      return n < 10 ? '0' + n : '' + n;
-    }
-    function envia() {
-      var f = document.chatform;
-      var t = f.msg.value;
-      if (!t || t.length === 0) return false;
-      var main = parent.frames['main'];
-      if (!main || !main.document) return false;
-      var el = main.document.getElementById('messages');
-      if (!el) return false;
-      var agora = new Date();
-      var hora = duasCasas(agora.getHours()) + ':' + duasCasas(agora.getMinutes());
-      var p = main.document.createElement('p');
-      p.className = 'msg you';
-      p.innerHTML = '<span class="user">Voce</span><span class="time">' + hora + '</span><br>' + escapeHtml(t);
-      el.appendChild(p);
-      el.scrollTop = el.scrollHeight;
-      f.msg.value = '';
+    var API_BASE = 'http://localhost:3000/api';
+    var selectEl = document.getElementById('recipient_id');
+    var pendingRecipientId = null;
+    window.addEventListener('message', function(e) {
+      if (e.data && e.data.type === 'setRecipient') {
+        var val = e.data.recipientId || '';
+        pendingRecipientId = val;
+        selectEl.value = val;
+      }
+    });
+    fetch(API_BASE + '/participants')
+      .then(function(r) { return r.json(); })
+      .then(function(participants) {
+        for (var i = 0; i < participants.length; i++) {
+          var p = participants[i];
+          if (p.name === 'Você') continue;
+          var opt = document.createElement('option');
+          opt.value = String(p.id);
+          opt.textContent = p.name;
+          selectEl.appendChild(opt);
+        }
+        if (pendingRecipientId !== null) {
+          selectEl.value = pendingRecipientId;
+        }
+      });
+    document.getElementById('chatform').onsubmit = function(e) {
+      e.preventDefault();
+      var bodyEl = document.getElementById('msgbody');
+      var body = bodyEl.value;
+      if (!body || body.trim().length === 0) return false;
+      var recipientEl = document.getElementById('recipient_id');
+      var recipientId = recipientEl.value;
+      var payload = {
+        participant_id: 1,
+        message: { body: body.trim(), recipient_id: recipientId === '' ? null : recipientId }
+      };
+      fetch(API_BASE + '/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      }).then(function(res) {
+        if (res.status === 201) {
+          bodyEl.value = '';
+          try { parent.frames['main'].refreshMessages(); } catch (err) {}
+        } else {
+          res.json().then(function(data) {
+            alert(data.errors ? data.errors.join('\n') : 'Erro ao enviar.');
+          }).catch(function() { alert('Erro ao enviar.'); });
+        }
+      }).catch(function() { alert('Erro de rede.'); });
       return false;
-    }
-    function escapeHtml(s) {
-      return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-    }
+    };
   </script>
 </body>
 </html>
