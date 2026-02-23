@@ -6,12 +6,25 @@
 </head>
 <body class="footer-page">
   <form id="chatform">
-    <label>Para:</label>
-    <select name="recipient_id" id="recipient_id">
-      <option value="">Todos</option>
-    </select>
-    <input type="text" name="body" id="msgbody" placeholder="Digite sua mensagem...">
-    <input type="submit" value="Enviar">
+    <table width="100%" cellpadding="0" cellspacing="0">
+      <tr>
+        <td width="10%">
+          <label>Para:</label>
+          <select name="recipient_id" id="recipient_id">
+            <option value="">Todos</option>
+          </select>
+        </td>
+        <td width="10%" align="right">
+          <label>Mensagem:</label>
+        </td>
+        <td width="70%">
+          <input type="text" name="body" id="msgbody" placeholder="Digite sua mensagem...">
+        </td>
+        <td width="10%">
+          <input type="submit" value="Enviar">
+        </td>
+      </tr>
+    </table>
   </form>
   <script type="text/javascript">
     var API_BASE = 'http://localhost:3000/api';
