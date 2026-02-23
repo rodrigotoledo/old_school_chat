@@ -1,17 +1,20 @@
-<% is_me = message.participant.name == 'Você' %>
-<%= tag.div id: dom_id(message), class: "flex #{is_me ? 'justify-end' : 'justify-start'} mb-3" do %>
+<% is_me = message.participant.name == "Você" %>
+<%= tag.div id: dom_id(message), class: "flex #{is_me ? "justify-end" : "justify-start"} mb-3" do %>
   <div class="max-w-[85%] sm:max-w-md">
-    <%# Bolha: você à direita (violeta), outros à esquerda (slate) %>
-    <div class="rounded-2xl px-4 py-2.5 shadow-md #{is_me ? 'bg-violet-600 text-white rounded-br-md' : 'bg-slate-700 text-slate-100 rounded-bl-md'}">
-      <%# Meta: nome · global/para X · hora %>
-      <div class="flex flex-wrap items-center gap-x-1.5 gap-y-0 mb-1.5 text-xs">
-        <span class="font-semibold <%= is_me ? 'text-violet-200' : 'text-cyan-400' %>"><%= message.participant.name %></span>
-        <span class="<%= is_me ? 'text-violet-300' : 'text-slate-500' %>">
-          · <%= message.recipient.present? ? "para #{message.recipient.name}" : "global" %>
+    <%# Bolha: suas mensagens com fundo bem evidente (violeta forte + borda) %>
+    <% bubble_class = is_me ? "bg-gray-700 ring-2 ring-violet-300 ring-offset-2 ring-offset-slate-900 rounded-br-md" : "bg-gray-800 rounded-bl-md" %>
+    <div class="rounded-2xl px-4 py-2.5 shadow-lg text-white <%= bubble_class %>">
+      <%# Meta: nome · global/para X (esquerda) — hora (direita, com espaço) %>
+      <div class="flex flex-wrap items-center justify-between gap-x-2 gap-y-0 mb-1.5 text-xs">
+        <span class="flex items-center gap-x-1.5 shrink-0">
+          <span class="font-semibold <%= is_me ? "text-violet-200" : "text-cyan-400" %>"><%= message.participant.name %></span>
+          <span class="<%= is_me ? "text-violet-300" : "text-slate-500" %>">
+            · <%= message.recipient.present? ? "para #{message.recipient.name}" : "global" %>
+          </span>
         </span>
-        <span class="<%= is_me ? 'text-violet-300/80' : 'text-slate-500' %> ml-auto"><%= message.created_at.strftime("%H:%M") %></span>
+        <span class="<%= is_me ? "text-violet-300/80" : "text-slate-500" %> shrink-0 ml-2"><%= message.created_at.strftime("%H:%M") %></span>
       </div>
-      <div class="break-words text-[15px] leading-snug <%= is_me ? 'text-white' : 'text-slate-100' %>"><%= message.body %></div>
+      <div class="break-words text-[15px] <%= is_me ? "text-white" : "text-slate-100" %>"><%= message.body %></div>
     </div>
   </div>
 <% end %>

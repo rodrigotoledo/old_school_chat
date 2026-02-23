@@ -40,7 +40,7 @@
 
       <%# Footer - Enviar para: [Todos] ou participante; mensagem aparece global %>
       <div class="p-3 bg-slate-800 border-t border-slate-700 space-y-2">
-        <%= form_with model: Message.new, url: messages_path, class: "flex flex-wrap items-center gap-2", data: { turbo_frame: "_top" } do |f| %>
+        <%= form_with model: Message.new, url: messages_path, class: "flex flex-wrap items-center gap-2", data: { turbo_frame: "_top", controller: "message-form", action: "turbo:submit-end->message-form#clearBodyIfSuccess" } do |f| %>
           <%= hidden_field_tag "participant_id", @participants.find_by(name: "Você")&.id %>
           <span class="text-slate-400 text-sm shrink-0">Para:</span>
           <%= f.select :recipient_id,
@@ -49,10 +49,10 @@
                 nil
               ),
               {},
-              class: "rounded-lg bg-slate-700 border border-slate-600 px-3 py-2 text-slate-100 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500",
-              data: { recipient_select_target: "select" } %>
+              { id: "message_recipient_id", class: "rounded-lg bg-slate-700 border border-slate-600 px-3 py-2 text-slate-100 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500", data: { recipient_select_target: "select" } } %>
           <%= f.text_field :body, placeholder: "Digite sua mensagem...", autocomplete: "off",
-              class: "flex-1 min-w-[12rem] rounded-lg bg-slate-700 border border-slate-600 px-4 py-2.5 text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent" %>
+              class: "flex-1 min-w-[12rem] rounded-lg bg-slate-700 border border-slate-600 px-4 py-2.5 text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent",
+              data: { message_form_target: "body" } %>
           <%= f.submit "Enviar", class: "rounded-lg bg-violet-500 hover:bg-violet-600 px-5 py-2.5 font-semibold text-white transition focus:outline-none focus:ring-2 focus:ring-violet-400 focus:ring-offset-2 focus:ring-offset-slate-900" %>
         <% end %>
       </div>

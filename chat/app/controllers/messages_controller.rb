@@ -8,11 +8,8 @@ class MessagesController < ApplicationController
     @message = participant.messages.build(attrs)
 
     if @message.save
-      # Quem enviou vê na resposta Turbo Stream; os outros veem pelo broadcast do model
-      respond_to do |format|
-        format.turbo_stream
-        format.html { redirect_to root_path }
-      end
+      # Só o model faz broadcast; todos (inclusive quem enviou) veem a mensagem pelo Action Cable
+      head :no_content
     else
       redirect_to root_path, alert: "Não foi possível enviar."
     end

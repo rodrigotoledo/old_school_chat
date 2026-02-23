@@ -29,6 +29,15 @@ Acesse `http://localhost:3000`.
   - Turbo Streams: `turbo_stream_from "chat"` para receber novas mensagens.
   - Stimulus: `chat_form_controller` envia mensagem via fetch e rola até o fim.
 
+## Tailwind e ERB
+
+As classes Tailwind (ex.: `bg-gray-300`) usadas em views ERB só entram no CSS se o build for executado. Em desenvolvimento:
+
+- **Recomendado:** use `bin/dev` — o `tailwindcss:watch` recompila ao editar ERB ou CSS.
+- **Se subir só com `bin/rails server`:** rode `bin/rails tailwindcss:build` depois de mudar classes em qualquer ERB.
+
+O diretório `app/assets/builds/` é gitignored; em clone novo, rode `bin/rails tailwindcss:build` uma vez para gerar `tailwind.css`.
+
 ## Comandos úteis
 
 ```bash
