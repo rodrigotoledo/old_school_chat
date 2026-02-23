@@ -1,0 +1,61 @@
+<% content_for :head do %>
+  <%= turbo_stream_from "chat" %>
+<% end %>
+
+<div class="flex h-screen bg-slate-900 text-slate-100 font-sans">
+  <%# Header %>
+  <header class="absolute top-0 left-0 right-0 h-14 bg-slate-800 border-b border-slate-700 flex items-center px-4 z-10">
+    <h1 class="text-xl font-bold text-violet-400">Chat</h1>
+  </header>
+
+  <div class="flex flex-1 pt-14 w-full overflow-hidden" data-controller="recipient-select">
+    <%# Sidebar - clicar num participante marca o "Para:" no form %>
+    <aside class="w-56 shrink-0 bg-slate-800/80 border-r border-slate-700 flex flex-col p-4">
+      <p class="text-slate-400 text-xs uppercase tracking-wider mb-3">Participantes</p>
+      <ul class="space-y-2">
+        <% @participants.each do |p| %>
+          <% if p.name == 'Você' %>
+            <li class="text-emerald-400 font-medium"><%= p.name %></li>
+          <% else %>
+            <li>
+              <button type="button"
+                class="w-full text-left text-slate-300 hover:text-cyan-400 hover:bg-slate-700/50 rounded px-2 py-1 -mx-2 transition cursor-pointer"
+                data-action="click->recipient-select#select"
+                data-recipient-id="<%= p.id %>">
+                <%= p.name %>
+              </button>
+            </li>
+          <% end %>
+        <% end %>
+      </ul>
+    </aside>
+
+    <%# Main - Conversas (turbo_frame_tag = alvo do broadcast_append_to) %>
+    <main class="flex-1 flex flex-col min-w-0">
+      <%= turbo_frame_tag "messages", id: "messages", class: "flex-1 overflow-y-auto p-4 pb-2 scroll-smooth flex flex-col bg-slate-900/50" do %>
+        <% @messages.each do |message| %>
+          <%= render "messages/message", message: message %>
+        <% end %>
+      <% end %>
+
+      <%# Footer - Enviar para: [Todos] ou participante; mensagem aparece global %>
+      <div class="p-3 bg-slate-800 border-t border-slate-700 space-y-2">
+        <%= form_with model: Message.new, url: messages_path, class: "flex flex-wrap items-center gap-2", data: { turbo_frame: "_top" } do |f| %>
+          <%= hidden_field_tag "participant_id", @participants.find_by(name: "Você")&.id %>
+          <span class="text-slate-400 text-sm shrink-0">Para:</span>
+          <%= f.select :recipient_id,
+              options_for_select(
+                [["Todos", ""]] + @participants.reject { |p| p.name == "Você" }.map { |p| [p.name, p.id] },
+                nil
+              ),
+              {},
+              class: "rounded-lg bg-slate-700 border border-slate-600 px-3 py-2 text-slate-100 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500",
+              data: { recipient_select_target: "select" } %>
+          <%= f.text_field :body, placeholder: "Digite sua mensagem...", autocomplete: "off",
+              class: "flex-1 min-w-[12rem] rounded-lg bg-slate-700 border border-slate-600 px-4 py-2.5 text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent" %>
+          <%= f.submit "Enviar", class: "rounded-lg bg-violet-500 hover:bg-violet-600 px-5 py-2.5 font-semibold text-white transition focus:outline-none focus:ring-2 focus:ring-violet-400 focus:ring-offset-2 focus:ring-offset-slate-900" %>
+        <% end %>
+      </div>
+    </main>
+  </div>
+</div>
