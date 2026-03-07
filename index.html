@@ -6,26 +6,28 @@
   <link rel="stylesheet" type="text/css" href="theme.css">
 </head>
 <body>
-  <table class="layout" cellpadding="0" cellspacing="0">
-    <tr>
-      <td class="header-cell" colspan="2">
-        <iframe name="header" src="header.html" width="100%" height="80" scrolling="no"></iframe>
-      </td>
-    </tr>
-    <tr>
-      <td class="sidebar-cell">
-        <iframe name="sidebar" src="sidebar.html" width="180" height="480"></iframe>
-      </td>
-      <td class="main-cell">
-        <iframe name="main" src="main.html" width="100%" height="480"></iframe>
-      </td>
-    </tr>
-    <tr>
-      <td class="footer-cell" colspan="2">
-        <iframe name="footer" src="footer.html" width="100%" height="50" scrolling="no"></iframe>
-      </td>
-    </tr>
-  </table>
+  <div id="layout">
+    <div id="content-area">
+      <table class="layout" cellpadding="0" cellspacing="0">
+        <tr>
+          <td class="header-cell" colspan="2">
+            <iframe name="header" src="header.html" width="100%" height="80" scrolling="no"></iframe>
+          </td>
+        </tr>
+        <tr>
+          <td class="sidebar-cell">
+            <iframe name="sidebar" src="sidebar.html" width="180" height="100%"></iframe>
+          </td>
+          <td class="main-cell">
+            <iframe name="main" src="main.html" width="100%" height="100%"></iframe>
+          </td>
+        </tr>
+      </table>
+    </div>
+    <div id="footer-area">
+      <iframe name="footer" src="footer.html" width="100%" height="100%" scrolling="no"></iframe>
+    </div>
+  </div>
   <script type="text/javascript">
     window.addEventListener('message', function(e) {
       if (e.data && e.data.type === 'setRecipient') {
