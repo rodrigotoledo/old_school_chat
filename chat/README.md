@@ -1,13 +1,13 @@
 # Chat (Rails + Tailwind + Solid Cable)
 
-Chat em tempo real com Rails 8, Tailwind CSS, API REST e broadcasting via Action Cable com **Solid Cable**.
+Real-time chat with Rails 8, Tailwind CSS, REST API, and Action Cable broadcasting with **Solid Cable**.
 
 ## Setup
 
 ```bash
 bundle install
 bin/rails db:create db:migrate db:seed
-bin/rails tailwindcss:build   # ou use bin/dev se tiver tailwind em watch
+bin/rails tailwindcss:build   # or use bin/dev with tailwind watch mode
 bin/rails server
 ```
 
@@ -16,31 +16,31 @@ Acesse `http://localhost:3000`.
 ## Estrutura
 
 - **API**
-  - `GET /api/participants` – lista participantes (JSON)
-  - `GET /api/messages` – lista mensagens (JSON)
-  - `POST /api/messages` – cria mensagem (participant_id, message[body]); faz broadcast em tempo real
+  - `GET /api/participants` – lists participants (JSON)
+  - `GET /api/messages` – lists messages (JSON)
+  - `POST /api/messages` – creates a message (`participant_id`, `message[body]`); broadcasts in real time
 
 - **Broadcasting**
   - Action Cable em development: adapter `async` (mesmo processo).
-  - Produção: **Solid Cable** (configurado em `config/cable.yml`), sem Redis.
+  - Production: **Solid Cable** (configured in `config/cable.yml`), no Redis.
 
 - **Front**
-  - Layout: header, sidebar (participantes), área de mensagens (rolagem automática), rodapé com input + botão Enviar.
-  - Turbo Streams: `turbo_stream_from "chat"` para receber novas mensagens.
-  - Stimulus: `chat_form_controller` envia mensagem via fetch e rola até o fim.
+  - Layout: header, sidebar (participants), messages area (auto-scroll), footer with input + Send button.
+  - Turbo Streams: `turbo_stream_from "chat"` to receive new messages.
+  - Stimulus: `chat_form_controller` sends a message via fetch and scrolls to the bottom.
 
 ## Tailwind e ERB
 
-As classes Tailwind (ex.: `bg-gray-300`) usadas em views ERB só entram no CSS se o build for executado. Em desenvolvimento:
+Tailwind classes (e.g. `bg-gray-300`) used in ERB views are only included in CSS after running the build. In development:
 
-- **Recomendado:** use `bin/dev` — o `tailwindcss:watch` recompila ao editar ERB ou CSS.
-- **Se subir só com `bin/rails server`:** rode `bin/rails tailwindcss:build` depois de mudar classes em qualquer ERB.
+- **Recommended:** use `bin/dev` — `tailwindcss:watch` recompiles when editing ERB or CSS.
+- **If running only with `bin/rails server`:** run `bin/rails tailwindcss:build` after changing classes in any ERB file.
 
-O diretório `app/assets/builds/` é gitignored; em clone novo, rode `bin/rails tailwindcss:build` uma vez para gerar `tailwind.css`.
+The `app/assets/builds/` directory is gitignored; in a fresh clone, run `bin/rails tailwindcss:build` once to generate `tailwind.css`.
 
-## Comandos úteis
+## Useful commands
 
 ```bash
-bin/rails db:seed              # Cria participantes (Você, Ana, Bruno, Maria, Pedro)
-bin/rails tailwindcss:build    # Compila CSS (rode após mudar classes Tailwind)
+bin/rails db:seed              # Creates participants (You, Ana, Bruno, Maria, Pedro)
+bin/rails tailwindcss:build    # Compiles CSS (run after changing Tailwind classes)
 ```

@@ -34,15 +34,15 @@
           el.innerHTML = '';
           for (var i = 0; i < messages.length; i++) {
             var msg = messages[i];
-            var isYou = msg.participant && msg.participant.name === 'Você';
-            var para = msg.recipient && msg.recipient.name ? 'para ' + msg.recipient.name : 'global';
+            var isYou = msg.participant && msg.participant.id === 1;
+            var recipientLabel = msg.recipient && msg.recipient.name ? 'to ' + msg.recipient.name : 'global';
             var name = msg.participant ? msg.participant.name : '';
             var div = document.createElement('div');
             div.className = 'msg' + (isYou ? ' you' : '');
             div.innerHTML =
               '<div class="msg-meta">' +
                 '<span class="msg-from">' + escapeHtml(name) + '</span>' +
-                '<span class="msg-para"> · ' + escapeHtml(para) + '</span>' +
+                '<span class="msg-para"> · ' + escapeHtml(recipientLabel) + '</span>' +
                 '<span class="msg-time">' + formatTime(msg.created_at) + '</span>' +
               '</div>' +
               '<div class="msg-body">' + escapeHtml(msg.body) + '</div>';
@@ -50,7 +50,7 @@
           }
           el.scrollTop = el.scrollHeight;
         })
-        .catch(function() { el.innerHTML = '<p class="msg">Erro ao carregar mensagens.</p>'; });
+        .catch(function() { el.innerHTML = '<p class="msg">Error loading messages.</p>'; });
     }
 
     window.refreshMessages = refreshMessages;

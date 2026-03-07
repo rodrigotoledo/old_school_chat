@@ -1,27 +1,27 @@
 # Old School – iframes + CSS + Rails API
 
-Layout antigo: tabela, iframes, tema em **CSS puro** (`theme.css`). O iframe de mensagens é servido pelo Rails e recarrega sozinho a cada 5 segundos.
+Classic layout: table, iframes, theme in **pure CSS** (`theme.css`). The messages iframe is served by Rails and reloads itself every 5 seconds.
 
-## Como usar
+## How to use
 
 1. **Rails** (porta 3000):
    ```bash
    cd chat && bundle install && bin/rails db:seed && bin/rails server
    ```
 
-2. **Abra a raiz do projeto** no navegador:
-   - Abrir direto: `index.html` (file://) ou
-   - Servir a pasta: `python3 -m http.server 8000` e acesse `http://localhost:8000`
+2. **Open the project root** in the browser:
+   - Open directly: `index.html` (file://), or
+   - Serve the folder: `python3 -m http.server 8000` and access `http://localhost:8000`
 
-3. O iframe **main** carrega `http://localhost:3000/messages_frame` (mensagens da API). A página do frame tem `<meta http-equiv="refresh" content="5">` → **reload de 5 em 5 segundos**.
+3. The **main** iframe loads `http://localhost:3000/messages_frame` (messages from the API). The frame page contains `<meta http-equiv="refresh" content="5">` → **reloads every 5 seconds**.
 
-4. O formulário no **footer** envia POST para `http://localhost:3000/messages_frame` com `participant_id=1` e `body`. O Rails cria a mensagem e redireciona para a lista; o iframe exibe a resposta (lista atualizada).
+4. The **footer** form sends a POST to `http://localhost:3000/messages_frame` with `participant_id=1` and `body`. Rails creates the message and redirects to the list; the iframe displays the response (updated list).
 
 ## Tema (CSS)
 
-- Cores e layout em **theme.css** (variáveis `:root` e classes).
-- Todos os HTML da raiz (index, header, sidebar, main, footer) usam `theme.css` e as mesmas cores.
+- Colors and layout are in **theme.css** (`:root` variables and classes).
+- All root HTML files (index, header, sidebar, main, footer) use `theme.css` and the same color palette.
 
-## Participante "Você"
+## Participant "You"
 
-O form usa `participant_id=1`. O seed cria os participantes na ordem: Você, Ana, Bruno, Maria, Pedro — então "Você" fica com id 1. Se mudar o seed, ajuste o `value` do hidden no `footer.html`.
+The form uses `participant_id=1`. The seed creates participants in this order: You, Ana, Bruno, Maria, Pedro — so "You" stays as id 1. If you change the seed, update the participant id used in `footer.html`.

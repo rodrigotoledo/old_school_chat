@@ -5,7 +5,7 @@
   <link rel="stylesheet" type="text/css" href="theme.css">
 </head>
 <body class="sidebar-page">
-  <p>Participantes</p>
+  <p>Participants</p>
   <ul id="participants"></ul>
   <script type="text/javascript">
     var API_BASE = 'http://localhost:3000/api';
@@ -18,7 +18,7 @@
           var p = participants[i];
           var li = document.createElement('li');
           li.setAttribute('data-id', String(p.id));
-          if (p.name === 'Você') li.className = 'you';
+          if (p.id === 1) li.className = 'you';
           li.textContent = p.name;
           li.style.cursor = 'pointer';
           li.onclick = function() {
@@ -29,7 +29,7 @@
           el.appendChild(li);
         }
       })
-      .catch(function() { el.innerHTML = '<li>Erro ao carregar</li>'; });
+      .catch(function() { el.innerHTML = '<li>Error loading</li>'; });
   </script>
 </body>
 </html>

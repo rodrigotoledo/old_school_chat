@@ -20,7 +20,7 @@ module Api
       message = participant.messages.build(attrs)
 
       if message.save
-        # Broadcast é feito no model (after_create_commit)
+        # Broadcasting is done in the model (after_create_commit)
         render json: message.as_json(
           only: %i[id body created_at],
           include: {

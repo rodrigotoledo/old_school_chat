@@ -8,10 +8,10 @@ class MessagesController < ApplicationController
     @message = participant.messages.build(attrs)
 
     if @message.save
-      # Só o model faz broadcast; todos (inclusive quem enviou) veem a mensagem pelo Action Cable
+      # Broadcasting happens in the model; everyone (including sender) receives it via Action Cable
       head :no_content
     else
-      redirect_to root_path, alert: "Não foi possível enviar."
+      redirect_to root_path, alert: "Could not send message."
     end
   end
 

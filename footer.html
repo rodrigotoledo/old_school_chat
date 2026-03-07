@@ -6,12 +6,12 @@
 </head>
 <body class="footer-page">
   <form id="chatform">
-    <label>Para:</label>
+    <label>To:</label>
     <select name="recipient_id" id="recipient_id">
-      <option value="">Todos</option>
+      <option value="">Everyone</option>
     </select>
-    <input type="text" name="body" id="msgbody" placeholder="Digite sua mensagem...">
-    <input type="submit" value="Enviar">
+    <input type="text" name="body" id="msgbody" placeholder="Type your message...">
+    <input type="submit" value="Send">
   </form>
   <script type="text/javascript">
     var API_BASE = 'http://localhost:3000/api';
@@ -29,7 +29,7 @@
       .then(function(participants) {
         for (var i = 0; i < participants.length; i++) {
           var p = participants[i];
-          if (p.name === 'Você') continue;
+          if (p.id === 1) continue;
           var opt = document.createElement('option');
           opt.value = String(p.id);
           opt.textContent = p.name;
@@ -60,10 +60,10 @@
           try { parent.frames['main'].refreshMessages(); } catch (err) {}
         } else {
           res.json().then(function(data) {
-            alert(data.errors ? data.errors.join('\n') : 'Erro ao enviar.');
-          }).catch(function() { alert('Erro ao enviar.'); });
+            alert(data.errors ? data.errors.join('\n') : 'Error sending message.');
+          }).catch(function() { alert('Error sending message.'); });
         }
-      }).catch(function() { alert('Erro de rede.'); });
+      }).catch(function() { alert('Network error.'); });
       return false;
     };
   </script>
